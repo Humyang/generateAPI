@@ -1,5 +1,5 @@
 function getApiInfo(element) {
-    console.log(element)
+    // console.log(element)
 
     // 解析 model
     let models = element.querySelectorAll('.description div')
@@ -13,6 +13,7 @@ function getApiInfo(element) {
     return {
         path: element.querySelector('.path a').text,
         type: element.querySelector('.http_method a').text,
+
         model: modelsObj
     }
 }
@@ -26,7 +27,7 @@ function genRawData() {
     moduleElement.forEach(item => {
 
         // 获取模块名称
-        let moduleName = item.querySelectorAll('.heading .toggleEndpointList').text
+        let moduleName = item.querySelector('.heading .toggleEndpointList').text
 
         // 获取模块下接口引用
 
