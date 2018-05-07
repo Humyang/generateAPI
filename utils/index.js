@@ -20,7 +20,8 @@ function pathToApiName(path) {
 
     return res
 }
-function nameToUpperCase(name){
+
+function nameToUpperCase(name) {
     let nameSplit = name.split('-')
 
     let first = nameSplit.shift()
@@ -36,10 +37,22 @@ function nameToUpperCase(name){
 
     return res
 }
-function pathToModuleName(path){
+
+function pathToModuleName(path) {
     // console.log(path)
     let arr = path.split('/')
     console.log(arr[1])
     return arr[1]
 }
-module.exports = { pathToApiName,pathToModuleName,nameToUpperCase }
+
+function modelArrToStr(modelArr) {
+    let modelStr = ''
+    modelArr.forEach(item => {
+
+    });
+}
+module.exports = {
+    pathToApiName,
+    pathToModuleName,
+    nameToUpperCase
+}

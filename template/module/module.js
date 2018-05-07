@@ -40,45 +40,62 @@ var pathToApiName = require('../../utils/index').pathToApiName
 var nameToUpperCase = require('../../utils/index').nameToUpperCase
 
 function getApiFormatRaw(item, sitem) {
-    let raw = `[API_NAME](obj) {
+
+    let apiStr = `
+        [API_NAME](obj) {
            return ajax.commonApi("[METHOD]", "[CONTENT_TYPE]", "[PATH]", obj)
         }`
-    
     let CONTENT_TYPE = 'X'
-    raw = raw.replace(new RegExp('\\[API_NAME\\]', 'g'), pathToApiName(sitem.path))
-    raw = raw.replace(new RegExp('\\[METHOD\\]', 'g'), sitem.type)
-    raw = raw.replace(new RegExp('\\[CONTENT_TYPE\\]', 'g'), CONTENT_TYPE)
-    raw = raw.replace(new RegExp('\\[PATH\\]', 'g'), sitem.path)
+    apiStr = apiStr.replace(new RegExp('\\[API_NAME\\]', 'g'), pathToApiName(sitem.path))
+    apiStr = apiStr.replace(new RegExp('\\[METHOD\\]', 'g'), sitem.type)
+    apiStr = apiStr.replace(new RegExp('\\[CONTENT_TYPE\\]', 'g'), CONTENT_TYPE)
+    apiStr = apiStr.replace(new RegExp('\\[PATH\\]', 'g'), sitem.path)
 
-    return raw
+
+    let testStr = `
+        api.[MODULE_NAME].[API_NAME]({ MODEL })
+        .then(res => {
+            console.log('1. api ', '[API_NAME] Success')
+        }).catch(err => {
+            console.log('1. api ', '[API_NAME] Error:', JSON.stringify(err))
+        })
+    `
+
+    testStr = testStr.replace(new RegExp('\\[MODULE_NAME\\]', 'g'), item.moduleName)
+    testStr = testStr.replace(new RegExp('\\[API_NAME\\]', 'g'), pathToApiName(sitem.path))
+    testStr = testStr.replace(new RegExp('\\[MODEL\\]', 'g'), item.moduleName)
+
+    return { apiStr, testStr }
 }
-function getModuleContent(item){
+
+function getModuleContent(item) {
     let apiArray = []
     item.apiArray.forEach(sitem => {
-            // console.log(sitem)
-            // 生成api
-            let modelStr = getApiFormatRaw(item, sitem)
-            // console.log(modelStr)
-            apiArray.push(modelStr)
-        })
-
-    // console.log(apiArray)
-    let res = `
+        let modelStr = getApiFormatRaw(item, sitem)
+        apiArray.push(modelStr)
+    })
+    let ModuleCotent = `
     // [MODULE_NAME]
     import ajax from '../ajax.js'
     export default {
         [MODULE_CONTENT]
     }`
-    res = res.replace(new RegExp('\\[MODULE_NAME\\]', 'g'),item.moduleName )
-    res = res.replace(new RegExp('\\[MODULE_CONTENT\\]', 'g'), apiArray.join(','))
-    // console.log(res)
-    return res
-        // console.log(apiArray.join(','))
+    ModuleCotent = ModuleCotent.replace(new RegExp('\\[MODULE_NAME\\]', 'g'), item.moduleName)
+    ModuleCotent = ModuleCotent.replace(new RegExp('\\[MODULE_CONTENT\\]', 'g'), apiArray.join(','))
+
+    // TODO
+    let TestContent = `
+    `
+
+    return {
+        ModuleCotent,
+        TestContent
+    }
 }
 
-function getModuleIndexContent(marray){
+function getModuleIndexContent(marray) {
 
-    let importArray =marray.map(item=>{
+    let importArray = marray.map(item => {
 
         let a = `import [MODULE_UPPER] from './module/[MODULE].js' //[COMMENT]`
         a = a.replace(new RegExp('\\[MODULE_UPPER\\]', 'g'), nameToUpperCase(item.moduleName))
@@ -86,7 +103,7 @@ function getModuleIndexContent(marray){
         a = a.replace(new RegExp('\\[COMMENT\\]', 'g'), item.comment)
         return a
     })
-    let moduleArray = marray.map(item=>{
+    let moduleArray = marray.map(item => {
         return nameToUpperCase(item.moduleName)
     })
 
@@ -103,7 +120,7 @@ function getModuleIndexContent(marray){
     return res
 }
 
-function getApiExampleRaw(moduleName,apiName,MODEL) {
+function getApiExampleRaw(moduleName, apiName, MODEL) {
 
     return `
             api.[MODULENAME].[APINAME]([MODEL]).then(res=>{
@@ -114,4 +131,4 @@ function getApiExampleRaw(moduleName,apiName,MODEL) {
         `
 }
 
-module.exports = { getApiFormatRaw, getApiExampleRaw,getModuleContent,getModuleIndexContent }
+module.exports = { getApiFormatRaw, getApiExampleRaw, getModuleContent, getModuleIndexContent }
