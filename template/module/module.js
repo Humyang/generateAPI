@@ -42,7 +42,7 @@ function getApiFormatRaw(item, sitem) {
     let raw = `[API_NAME](obj) {
            return ajax.commonApi("[METHOD]", "[CONTENT_TYPE]", "[PATH]", obj)
         }`
-        // console.log(sitem.path)
+    
     let CONTENT_TYPE = 'X'
     raw = raw.replace(new RegExp('\\[API_NAME\\]', 'g'), pathToApiName(sitem.path))
     raw = raw.replace(new RegExp('\\[METHOD\\]', 'g'), sitem.type)
