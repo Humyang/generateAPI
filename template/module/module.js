@@ -14,7 +14,7 @@
 // return ajax.commonApi("post", "JSON", "/payment-data/list/by-merchant-identity", obj)
 // return new Promise((reslove,reject)=>{
 //     setTimeout(() => {
-//         let obj = 
+//         let obj =
 //             {"code":0,"errMsg":"","extra":{data:[
 //                 {mobile:13422222222,item:"测试1111",amount:333,status:"已缴费"}
 //             ],
@@ -37,6 +37,7 @@
 // [CONTENT_TYPE] X，JSON，FORM
 
 var pathToApiName = require('../../utils/index').pathToApiName
+var nameToUpperCase = require('../../utils/index').nameToUpperCase
 
 function getApiFormatRaw(item, sitem) {
     let raw = `[API_NAME](obj) {
@@ -51,8 +52,59 @@ function getApiFormatRaw(item, sitem) {
 
     return raw
 }
+function getModuleContent(item){
+    let apiArray = []
+    item.apiArray.forEach(sitem => {
+            // console.log(sitem)
+            // 生成api
+            let modelStr = getApiFormatRaw(item, sitem)
+            // console.log(modelStr)
+            apiArray.push(modelStr)
+        })
 
-function getApiExampleRaw(moduleName) {
+    // console.log(apiArray)
+    let res = `
+    // [MODULE_NAME]
+    import ajax from '../ajax.js'
+    export default {
+        [MODULE_CONTENT]
+    }`
+    res = res.replace(new RegExp('\\[MODULE_NAME\\]', 'g'),item.moduleName )
+    res = res.replace(new RegExp('\\[MODULE_CONTENT\\]', 'g'), apiArray.join(','))
+    // console.log(res)
+    return res
+        // console.log(apiArray.join(','))
+}
+
+function getModuleIndexContent(marray){
+
+    let importArray =marray.map(item=>{
+
+        let a = `import [MODULE_UPPER] from './module/[MODULE].js' //[COMMENT]`
+        a = a.replace(new RegExp('\\[MODULE_UPPER\\]', 'g'), nameToUpperCase(item.moduleName))
+        a = a.replace(new RegExp('\\[MODULE\\]', 'g'), item.moduleName)
+        a = a.replace(new RegExp('\\[COMMENT\\]', 'g'), item.comment)
+        return a
+    })
+    let moduleArray = marray.map(item=>{
+        return nameToUpperCase(item.moduleName)
+    })
+
+    let res = `
+    [IMPORT]
+    export {
+        [MODULE],
+    }
+    `
+
+    res = res.replace(new RegExp('\\[MODULE\\]', 'g'), moduleArray.join(',\r\n'))
+    res = res.replace(new RegExp('\\[IMPORT\\]', 'g'), importArray.join('\r\n'))
+
+    return res
+}
+
+function getApiExampleRaw(moduleName,apiName,MODEL) {
+
     return `
             api.[MODULENAME].[APINAME]([MODEL]).then(res=>{
 
@@ -61,4 +113,5 @@ function getApiExampleRaw(moduleName) {
             })
         `
 }
-module.exports = { getApiFormatRaw, getApiExampleRaw }
+
+module.exports = { getApiFormatRaw, getApiExampleRaw,getModuleContent,getModuleIndexContent }
