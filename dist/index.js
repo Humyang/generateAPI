@@ -1,4 +1,5 @@
-import cardTicket from './module/cardTicket.js' //卡券管理
+
+    import cardTicket from './module/cardTicket.js' //卡券管理
 import merchant from './module/merchant.js' //商户管理
 import assistant from './module/assistant.js' //店员模块
 import dict from './module/dict.js' //数据字典
@@ -14,21 +15,22 @@ import plan from './module/plan.js' //缴费通计划模块
 import aggcode from './module/aggcode.js' //聚合码管理
 import order from './module/order.js' //订单管理
 import shop from './module/shop.js' //门店模块
-export {
-    cardTicket,
-    merchant,
-    assistant,
-    dict,
-    user,
-    sms,
-    paySearch,
-    paymentData,
-    payment,
-    paymentTemplate,
-    sms,
-    smsManager,
-    plan,
-    aggcode,
-    order,
-    shop,
-}
+    export {
+        cardTicket,
+merchant,
+assistant,
+dict,
+user,
+sms,
+paySearch,
+paymentData,
+payment,
+paymentTemplate,
+sms,
+smsManager,
+plan,
+aggcode,
+order,
+shop,
+    }
+    

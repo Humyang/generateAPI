@@ -5,7 +5,6 @@
     </div>
 </template>
 <script>
-import api from '../index.js'
 import exampleApi from './exampleApi1'
 export default {
     components:{
@@ -17,13 +16,7 @@ export default {
         }
     },
     mounted(){
-        // api.example.exampleApi1({
-
-        // }).then(res=>{
-        //     this.status = true
-        // }).catch(err=>{
-        //     this.status = false
-        // })
+        
     }
 }
 </script>

@@ -12,8 +12,7 @@ export default {
         }
     },
     mounted(){
-        api.example.exampleApi1({
-        }).then(res=>{
+        [APIEXAMPLE].then(res=>{
             this.status = true
         }).catch(err=>{
             this.status = false

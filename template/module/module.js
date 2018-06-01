@@ -120,15 +120,96 @@ function getModuleIndexContent(marray) {
     return res
 }
 
-function getApiExampleRaw(moduleName, apiName, MODEL) {
-
-    return `
-            api.[MODULENAME].[APINAME]([MODEL]).then(res=>{
-
+function getTestModuleApi(moduleName,item){
+    let raw = 
+`
+    <template>
+        <div :class="{'success':status,'error':!status}">
+            <p>[MODULE_NAME].[API_NAME]</p>
+        </div>
+    </template>
+    <script>
+    import api from '../index.js'
+    export default {
+        data(){
+            return {
+                status:false
+            }
+        },
+        mounted(){
+            api.[MODULE_NAME].[API_NAME]({ MODEL })
+            .then(res=>{
+                this.status = true
             }).catch(err=>{
-                console.log(err)
+                this.status = false
             })
-        `
-}
+        }
+    }
+    </script>
+`
+raw = raw.replace(new RegExp('\\[MODULE_NAME\\]', 'g'), moduleName)
+raw = raw.replace(new RegExp('\\[API_NAME\\]', 'g'), pathToApiName(item.path))
+// raw = raw.replace(new RegExp('\\[MODEL\\]', 'g'), item.moduleName)
 
-module.exports = { getApiFormatRaw, getApiExampleRaw, getModuleContent, getModuleIndexContent }
+return raw
+
+}
+function getTestModule(moduleName){
+    let raw = `
+<template>
+    <div :class="{'success':status,'error':!status}">
+        <p>exampleApi</p>
+        [APILIST]
+        
+    </div>
+</template>
+<script>
+import [APILIST] from './[APILIST]'
+export default {
+    components:{
+        [APILIST]
+    },
+    data(){
+        return {
+            status:false
+        }
+    },
+    mounted(){
+        
+    }
+}
+</script>    
+`
+raw = raw.replace(new RegExp('\\[APILIST\\]', 'g'), item.moduleName)
+}
+function getTestIndex(){
+let raw =
+`
+<template>
+    <div>
+        [ALL_MODULE]
+    </div>
+</template>
+<script>
+[IMPORT_MODULE_LIST]
+
+export default {
+    components:{
+        [COMPONENTS_LIST]
+    },
+    data(){
+        return {
+            
+        }
+    }
+}
+</script>
+`
+}
+module.exports = { 
+    getApiFormatRaw, 
+    getModuleContent, 
+    getModuleIndexContent,
+    getTestModule,
+    getTestModuleApi,
+ }
